@@ -8,7 +8,7 @@ def triplet_generator():
         a_array = []
         p_array = []
         n_array = []
-        for i in range(4):
+        for i in range(8):
             a = random.choice(os.listdir('./out_img'))
             n = random.choice(os.listdir('./out_img'))
             while a == n:
@@ -28,9 +28,9 @@ def triplet_generator():
             p_img = cv2.imread(os.path.join(a_path, p_file))
             n_img = cv2.imread(os.path.join(n_path, n_file))
             
-            a_img = np.flip(a_img, 1)
-            p_img = np.flip(p_img, 1)
-            n_img = np.flip(n_img, 1)
+            a_img = np.flip(a_img, 1) / 255
+            p_img = np.flip(p_img, 1) / 255
+            n_img = np.flip(n_img, 1) / 255
 
             a_array.append(a_img)
             p_array.append(p_img)

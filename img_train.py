@@ -54,6 +54,6 @@ train = Model([in_a, in_p, in_n], triplet_loss_layer)
 generator = triplet_generator()
 
 train.compile(loss=None, optimizer='adam')
-train.fit_generator(generator, epochs=10, steps_per_epoch=100) 
+train.fit_generator(generator, epochs=250, steps_per_epoch=200) 
 
 train.save_weights(WEIGHTS_PATH)
