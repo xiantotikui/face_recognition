@@ -13,8 +13,8 @@ from keras.layers.pooling import MaxPooling2D, AveragePooling2D
 from keras.models import Model
 from keras import backend as K
 
-import face_recognition.utils as utils
-from face_recognition.utils import LRN2D
+import data.utils as utils
+from data.utils import LRN2D
 
 def create_model():
     myInput = Input(shape=(96, 96, 3))

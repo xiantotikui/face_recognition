@@ -1,10 +1,13 @@
-from face_recognition.model import create_model
+from data.model import create_model
 from img_dataloader import triplet_generator
 from keras import backend as K
 from keras.models import Model
 from keras.layers import Input, Layer
+from keras.callbacks import ModelCheckpoint
+import os
 
-WEIGHTS_PATH = './weights/nn4.small2.v1.h5'
+WEIGHTS_PATH = './weights/nn4.small2.final.hdf5'
+WEIGHTS_CALLBACK = os.path.join('./weights', 'nn4.small2.{epoch:02d}.hdf5')
 
 model = create_model()
 
@@ -54,6 +57,9 @@ train = Model([in_a, in_p, in_n], triplet_loss_layer)
 generator = triplet_generator()
 
 train.compile(loss=None, optimizer='adam')
-train.fit_generator(generator, epochs=250, steps_per_epoch=200) 
+
+save_weights = ModelCheckpoint(WEIGHTS_CALLBACK, verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=25)
+
+train.fit_generator(generator, epochs=150, steps_per_epoch=200, callbacks=[save_weights]) 
 
 train.save_weights(WEIGHTS_PATH)
