@@ -2,9 +2,12 @@
 Keras face recognition
 
 1. img_preprocessing.py is created for http://vis-www.cs.umass.edu/lfw/ dataset
-2. img_train.py create weights
+2. img_train.py create weights of main network
+3. EXPERIMENTAL img_transfer.py to add photos to database
 
 TODO
 
-1. Transfer learning after train
+1. Upload weights (Google Drive)
 2. Add webcam to input
+3. Predict person face
+

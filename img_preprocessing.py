@@ -20,8 +20,7 @@ for filename0 in os.listdir(INPUT_DIR):
 
         for (x,y,w,h) in faces:
             roi_color = img[y:y+h, x:x+w]
-        
-        img = cv2.resize(roi_color, IMG_SIZE) 
+
+        img = cv2.resize(roi_color, IMG_SIZE)
 
         cv2.imwrite(os.path.join(OUTPUT_DIR, filename0.lower(), filename1.lower()), img)
-

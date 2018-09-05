@@ -145,7 +145,7 @@ def load_weights():
       conv_w = np.reshape(conv_w, conv_shape[name])
       conv_w = np.transpose(conv_w, (2, 3, 1, 0))
       conv_b = genfromtxt(paths[name + '_b'], delimiter=',', dtype=None)
-      weights_dict[name] = [conv_w, conv_b]     
+      weights_dict[name] = [conv_w, conv_b]
     elif 'bn' in name:
       bn_w = genfromtxt(paths[name + '_w'], delimiter=',', dtype=None)
       bn_b = genfromtxt(paths[name + '_b'], delimiter=',', dtype=None)
@@ -160,4 +160,3 @@ def load_weights():
       weights_dict[name] = [dense_w, dense_b]
 
   return weights_dict
-
