@@ -51,54 +51,51 @@ def triplet_generator(input, logic):
         else:
             yield([a, p, n], y)
 
-def triplet_prediction(input):
-    tmp0 = os.listdir(input)
-    while True:
-        y_size = len(os.listdir(input))
-        a_array = []
-        p_array = []
-        n_array = []
-        y_array = []
-        for i in range(8):
-            a = random.choice(os.listdir(input))
-            n = random.choice(os.listdir(input))
-            while a == n:
+class TripletPrediction:
+    def __init__(self):
+        self.labels = []
+
+    def triplet_prediction(self, input):
+        dir = os.listdir(input)
+        while True:
+            a_array = []
+            p_array = []
+            n_array = []
+            y_array = []
+            for i in range(8):
+                a = random.choice(os.listdir(input))
                 n = random.choice(os.listdir(input))
+                while a == n:
+                    n = random.choice(os.listdir(input))
 
-            a_path = os.path.join(input, a)
-            n_path = os.path.join(input, n)
+                a_path = os.path.join(input, a)
+                n_path = os.path.join(input, n)
 
-            a_file = random.choice(os.listdir(a_path))
-            p_file = random.choice(os.listdir(a_path))
-            while a_file == p_file:
+                a_file = random.choice(os.listdir(a_path))
                 p_file = random.choice(os.listdir(a_path))
+                while a_file == p_file:
+                    p_file = random.choice(os.listdir(a_path))
 
-            n_file = random.choice(os.listdir(n_path))
+                n_file = random.choice(os.listdir(n_path))
 
-            a_img = cv2.imread(os.path.join(a_path, a_file))
-            p_img = cv2.imread(os.path.join(a_path, p_file))
-            n_img = cv2.imread(os.path.join(n_path, n_file))
+                a_img = cv2.imread(os.path.join(a_path, a_file))
+                p_img = cv2.imread(os.path.join(a_path, p_file))
+                n_img = cv2.imread(os.path.join(n_path, n_file))
 
-            a_img = np.flip(a_img, 1) / 255
-            p_img = np.flip(p_img, 1) / 255
-            n_img = np.flip(n_img, 1) / 255
+                a_img = np.flip(a_img, 1) / 255
+                p_img = np.flip(p_img, 1) / 255
+                n_img = np.flip(n_img, 1) / 255
 
-            a_array.append(a_img)
-            p_array.append(p_img)
-            n_array.append(n_img)
+                a_array.append(a_img)
+                p_array.append(p_img)
+                n_array.append(n_img)
+                y_array.append(to_categorical([np.where(np.asarray(dir) == a)[0]], len(dir)))
 
-            tmp1 = to_categorical(np.where(np.asarray(os.listdir(input)) == a), y_size)
-            y_array.append(np.reshape(tmp1, (y_size)))
+            a = np.asarray(a_array)
+            p = np.asarray(p_array)
+            n = np.asarray(n_array)
+            y = np.asarray(y_array)
 
-        a = np.asarray(a_array)
-        p = np.asarray(p_array)
-        n = np.asarray(n_array)
-        y = np.asarray(y_array)
+            self.labels.append([np.where(item[0] == 1)[0] for item in y])
 
-        tmp2 = [np.where(item==1)[0] for item in y]
-        tmp2 = np.asarray(tmp2).flatten()
-        tmp0 = np.asarray(tmp0)
-        tmp3 = [tmp0[item] for item in tmp2]
-        print(tmp3)
-
-        yield([a, p, n], y)
+            yield([a, p, n], y)

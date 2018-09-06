@@ -1,5 +1,5 @@
-from data.model import create_model
-from img_dataloader import triplet_prediction
+from data.model_old import create_model
+from img_dataloader import TripletPrediction
 from keras.models import Model
 from keras.layers import Input
 from keras.layers.core import Dropout, Dense
@@ -26,7 +26,7 @@ first_model.load_weights(WEIGHTS_NN4SMALL2_PATH)
 for layer in first_model.layers:
     layer.trainable = False
 
-tmp0 = (os.listdir('./transfer_img'))
+tmp0 = os.listdir('./transfer_img')
 
 x0, x1, x2 = first_model.output
 x = Subtract()([x1, x2])
@@ -41,8 +41,13 @@ model_final = Model(inputs=first_model.input, outputs=predictions)
 model_final.load_weights(WEIGHTS_TRANSFER_PATH)
 model_final.compile(loss="categorical_crossentropy", optimizer='adam')
 
-generator = triplet_prediction('./transfer_img')
-prediction = model_final.predict_generator(generator=generator, verbose=1, steps=1)
+triplet = TripletPrediction()
+generator = triplet.triplet_prediction('./transfer_img')
+predictions = model_final.predict_generator(generator=generator, verbose=1, steps=1)
 
-tmp1 = np.argmax(prediction, axis=1)
-print([tmp0[item] for item in tmp1])
+predictions = np.argmax(predictions, axis=1)
+
+print('Target:')
+print(np.asarray(triplet.labels[0]).flatten())
+print('Predicted:')
+print(predictions)
