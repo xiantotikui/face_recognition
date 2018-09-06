@@ -2,7 +2,7 @@ from data.model import create_model
 from img_dataloader import triplet_generator
 from keras import backend as K
 from keras.models import Model
-from keras.layers import Input, Layer
+from keras.layers import Input, Layer, Dense, Lambda
 from keras.callbacks import ModelCheckpoint
 import os
 
@@ -10,6 +10,9 @@ WEIGHTS_PATH = './weights/nn4.small2.final.hdf5'
 WEIGHTS_CALLBACK = os.path.join('./weights', 'nn4.small2.{epoch:02d}.hdf5')
 
 model = create_model()
+dense_layer = Dense(128, name='dense_layer')(model.output)
+tmp = Lambda(lambda x: K.l2_normalize(x, axis=1), name='norm_layer')(dense_layer)
+model = Model(inputs=model.input, outputs=tmp)
 
 in_a = Input(shape=(96, 96, 3))
 in_p = Input(shape=(96, 96, 3))
@@ -60,6 +63,6 @@ train.compile(loss=None, optimizer='adam')
 
 save_weights = ModelCheckpoint(WEIGHTS_CALLBACK, verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=25)
 
-train.fit_generator(generator, epochs=150, steps_per_epoch=200, callbacks=[save_weights])
+train.fit_generator(generator, epochs=250, steps_per_epoch=200, callbacks=[save_weights])
 
 train.save_weights(WEIGHTS_PATH)

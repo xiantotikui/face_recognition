@@ -19,8 +19,6 @@ for filename0 in os.listdir(INPUT_DIR):
         faces = face_cascade.detectMultiScale(gray, 1.3, 5)
 
         for (x,y,w,h) in faces:
-            roi_color = img[y:y+h, x:x+w]
-
-        img = cv2.resize(roi_color, IMG_SIZE)
+            img = cv2.resize(img[y:y+h, x:x+w], IMG_SIZE)
 
         cv2.imwrite(os.path.join(OUTPUT_DIR, filename0.lower(), filename1.lower()), img)

@@ -99,3 +99,33 @@ class TripletPrediction:
             self.labels.append([np.where(item[0] == 1)[0] for item in y])
 
             yield([a, p, n], y)
+
+    def triplet_webcam(self, input, video):
+        while True:
+            a_array = []
+            p_array = []
+            n_array = []
+            y_array = []
+            for i in range(8):
+                n = random.choice(os.listdir(input))
+                n_path = os.path.join(input, n)
+                n_file = random.choice(os.listdir(n_path))
+                n_img = cv2.imread(os.path.join(n_path, n_file))
+
+                a_img = np.flip(random.choice(video), 1) / 255
+                p_img = np.flip(random.choice(video), 1) / 255
+                n_img = np.flip(n_img, 1) / 255
+
+                a_array.append(a_img)
+                p_array.append(p_img)
+                n_array.append(n_img)
+                y_array.append(to_categorical([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0], 25))
+
+            a = np.asarray(a_array)
+            p = np.asarray(p_array)
+            n = np.asarray(n_array)
+            y = np.asarray(y_array)
+
+            self.labels.append([np.where(item[0] == 1)[0] for item in y])
+
+            yield([a, p, n], y)

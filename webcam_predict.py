@@ -1,3 +1,6 @@
+import cv2
+import sys
+from collections import deque
 from data.model import create_model
 from img_dataloader import TripletPrediction
 from keras.models import Model
@@ -41,13 +44,36 @@ model_final = Model(inputs=first_model.input, outputs=predictions)
 model_final.load_weights(WEIGHTS_TRANSFER_PATH)
 model_final.compile(loss="categorical_crossentropy", optimizer='adam')
 
-triplet = TripletPrediction()
-generator = triplet.triplet_prediction('./transfer_img')
-predictions = model_final.predict_generator(generator=generator, verbose=1, steps=1)
+IMG_SIZE = (96, 96)
 
-predictions = np.argmax(predictions, axis=1)
+face_cascade = cv2.CascadeClassifier('haarcascade_frontalface_default.xml')
 
-print('Target:')
-print(np.asarray(triplet.labels[0]).flatten())
-print('Predicted:')
-print(predictions)
+video_capture = cv2.VideoCapture(0)
+
+frames = deque(maxlen=2)
+
+
+
+while True:
+    ret, frame = video_capture.read()
+
+    gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+
+    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+
+    for (x, y, w, h) in faces:
+        frames.append(cv2.resize(frame[y:y+h, x:x+w], IMG_SIZE))
+
+    if len(frames) >= 2:
+        triplet = TripletPrediction()
+        generator = triplet.triplet_webcam('./transfer_img', frames)
+        predictions = model_final.predict_generator(generator=generator, verbose=1, steps=1)
+        predictions = np.argmax(predictions, axis=1)
+        print(predictions[0])
+        cv2.imshow("Video", frames[0])
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+video_capture.release()
+cv2.destroyAllWindows()

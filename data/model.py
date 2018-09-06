@@ -218,7 +218,5 @@ def create_model():
 
     av_pool = AveragePooling2D(pool_size=(3, 3), strides=(1, 1))(inception_5b)
     reshape_layer = Flatten(name='flatten_layer')(av_pool)
-    dense_layer = Dense(128, name='dense_layer')(reshape_layer)
-    norm_layer = Lambda(lambda x: K.l2_normalize(x, axis=1), name='norm_layer')(dense_layer)
 
-    return Model(inputs=[myInput], outputs=norm_layer)
+    return Model(inputs=[myInput], outputs=reshape_layer)
