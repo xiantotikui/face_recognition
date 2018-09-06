@@ -32,7 +32,7 @@ x0, x1, x2 = first_model.output
 x = Subtract()([x1, x2])
 x = Concatenate()([x0, x])
 x = Dense(128, activation="relu")(x)
-x = Dropout(0.25)(x)
+x = Dropout(0.2)(x)
 x = Dense(128, activation="relu")(x)
 predictions = Dense(25, activation="softmax")(x)
 
@@ -42,8 +42,8 @@ model_final.compile(loss="categorical_crossentropy", optimizer='adam', metrics=[
 
 generator = triplet_generator('./transfer_img', False)
 
-save_weights = ModelCheckpoint(WEIGHTS_CALLBACK, verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=25)
+save_weights = ModelCheckpoint(WEIGHTS_CALLBACK, verbose=0, save_best_only=False, save_weights_only=False, mode='auto', period=10)
 
-model_final.fit_generator(generator, steps_per_epoch=150, epochs=400, callbacks=[save_weights])
+model_final.fit_generator(generator, steps_per_epoch=100, epochs=100, callbacks=[save_weights])
 
 model_final.save_weights(WEIGHTS_PATH)
